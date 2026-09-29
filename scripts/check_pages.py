@@ -2,13 +2,14 @@
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlsplit, unquote
+from activities import ACTIVITY_PATHS, ASSETS
 import json
 import xml.etree.ElementTree as ET
 
 ROOT=Path(__file__).resolve().parents[1]
 CONFIG=json.loads((ROOT/'seo/site.json').read_text())
 ORIGIN=CONFIG['origin'];BASE=CONFIG['base_path'];PUBLIC=ROOT/'public'
-PATHS=['/','/products/afu-lavender-essential-oil-10ml/','/guides/choosing-lavender-essential-oil/','/faq/','/about/']
+PATHS=['/','/products/afu-lavender-essential-oil-10ml/','/guides/choosing-lavender-essential-oil/','/faq/','/about/']+ACTIVITY_PATHS
 class Page(HTMLParser):
     def __init__(self,text):
         super().__init__();self.meta={};self.canonical=[];self.refs=[];self.ids=set();self.schemas=[];self.h1=0;self.title='';self.intitle=False;self.injson=False;self.buffer='';self.feed(text)
@@ -22,8 +23,11 @@ class Page(HTMLParser):
         for k in ['href','src']:
             if k in a:self.refs.append(a[k])
         if t=='script':
-            assert a.get('type')=='application/ld+json','Public pages must not depend on JavaScript'
-            self.injson=True;self.buffer=''
+            if a.get('src'):
+                assert a.get('type')=='module' and a['src']==BASE+'/assets/activities.js'
+            else:
+                assert a.get('type')=='application/ld+json','Only structured data may be inline'
+                self.injson=True;self.buffer=''
     def handle_data(self,d):
         if self.intitle:self.title+=d
         if self.injson:self.buffer+=d
@@ -64,6 +68,7 @@ assert 'OAI-SearchBot\nAllow: /' in (PUBLIC/'robots.txt').read_text()
 assert 'noindex' in (PUBLIC/'404.html').read_text()
 assert (PUBLIC/'.nojekyll').exists()
 expected={Path(p.lstrip('/'))/'index.html' for p in PATHS}|{Path(p) for p in ['assets/evening.png','assets/public.css','404.html','robots.txt','sitemap.xml','llms.txt','.nojekyll']}
+expected|={Path('assets')/name for name in ASSETS}
 actual={p.relative_to(PUBLIC) for p in PUBLIC.rglob('*') if p.is_file()}
 assert actual==expected,(actual-expected,expected-actual)
-print('PASS: 5 indexable static pages; GitHub Pages subpath links, assets, canonical, JSON-LD, sitemap and public-only artifact.')
+print('PASS: 8 indexable pages with static introductions and optional activity interactions; GitHub Pages subpath links, assets, canonical, JSON-LD, sitemap and public-only artifact.')

@@ -37,3 +37,13 @@ GitHub Pages 不执行 _headers / _redirects。页面自带正确的 meta robots
 
 具名来源和资料核验日期保留在正文。修改商品信息时同步核对正文、schema 和数据来源。
 没有真实报价和评价时，不添加 Offer、AggregateRating 或 Review 标记；Product 用于实体描述，不宣称商品富摘要资格。
+
+## 晚间引流活动
+
+- `/activities/`：活动入口。
+- `/activities/five-elements/`：今日五行留白签，借鉴五行校准项目的每日主题与分享卡体验，采用原创意象规则。
+- `/activities/evening-personality/`：六题趣味晚间偏好测试，非心理诊断。
+
+支持结果卡 PNG 下载、邀请文案复制、重测、产品及另一个活动跳转。无账号、追踪采集或答题上传；UTM 仅标识链接来源，并不代表统计服务已接入。活动说明、玩法规则与结果类型在静态 HTML 内可读取。
+
+活动资源位于 `seo/activities/`，模板为 `scripts/activities.py`；使用 `node scripts/check_activities.mjs` 校验计分与每日分布规则。
