@@ -2,6 +2,7 @@
 """Build crawlable HTML. No JavaScript execution or external packages required."""
 from activities import ACTIVITY_PATHS, ASSETS, activity_pages
 from consumer_pages import consumer_pages
+from demos import DEMO_FILES, build_demos
 import argparse
 import html
 import ipaddress
@@ -55,7 +56,7 @@ def build(output, origin='', release=False, base_path=None):
     if release and output == ROOT/'dist':
         raise ValueError('发布目录必须与本地演示 dist 分开，例如 publish。')
     if release and output.exists():
-        allowed = {Path(path.strip('/'))/'index.html' for path in PUBLIC_PATHS}
+        allowed = {Path(path.strip('/'))/'index.html' for path in PUBLIC_PATHS} | DEMO_FILES
         allowed |= {Path('assets')/name for name in ASSETS}
         allowed |= {Path(path) for path in ['assets/public.css','assets/evening.png','404.html','robots.txt','sitemap.xml','llms.txt','.nojekyll']}
         if any(x.relative_to(output) not in allowed for x in output.rglob('*') if x.is_file()):
@@ -101,6 +102,7 @@ def build(output, origin='', release=False, base_path=None):
     for path,content in pages.items():
         target=output/path.strip('/')/'index.html' if path!='/' else output/'index.html'
         target.parent.mkdir(parents=True,exist_ok=True);target.write_text(with_base(content))
+    build_demos(ROOT, output, base_path)
     (output/'404.html').write_text(with_base('<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1"><title>页面未找到｜晚间留白</title><link rel="stylesheet" href="/assets/public.css"><main class="container"><h1>页面未找到</h1><p>地址可能已变更，欢迎从产品资料页继续阅读。</p><a href="/">返回首页</a></main></html>'))
     # Do not robots-block demo URLs: noindex must remain readable if someone hosts dist accidentally.
     txt='User-agent: *\nAllow: /\n\nUser-agent: OAI-SearchBot\nAllow: /\n'

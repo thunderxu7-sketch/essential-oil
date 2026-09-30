@@ -15,7 +15,7 @@ python3 scripts/check_pages.py
 ```
 
 向 main 分支推送后，GitHub Actions 自动构建、校验并部署 public 目录。
-公开仓库只包含产品网站源文件，不包含内部策划、模拟后台、小程序数据或第三方商品参考图。
+公开仓库包含消费者网站与静态小程序 / 后台演示源文件，不包含内部策划文档、真实用户数据或第三方商品参考图。
 
 - seo/site.json：域名、项目路径和产品事实。
 - seo/public.css：样式。
@@ -25,7 +25,7 @@ python3 scripts/check_pages.py
 
 ## 搜索收录
 
-所有公开 HTML 均包含正文并允许收录。canonical 和 sitemap 使用正式 Pages 项目网址。
+消费者内容页均包含正文并允许收录；小程序与后台演示为 noindex，不进入 sitemap。canonical 和 sitemap 使用正式 Pages 项目网址。
 站点地图：https://thunderxu7-sketch.github.io/essential-oil/sitemap.xml
 
 项目目录下的 robots.txt 不是域名根目录 robots.txt，不能控制整个 github.io 站点的爬虫规则；不修改账号下其他网站的根路径配置。可在 Search Console / Bing Webmaster Tools 验证项目网址后直接提交上述站点地图。
@@ -49,3 +49,12 @@ GitHub Pages 不执行 _headers / _redirects。页面自带正确的 meta robots
 活动资源位于 `seo/activities/`，模板为 `scripts/activities.py`；使用 `node scripts/check_activities.mjs` 校验计分与每日分布规则。
 
 公开内容由 `scripts/consumer_pages.py` 生成。首页聚焦生活场景与活动参与，产品页提供规格、参考价及选购入口；资料来源在可展开区，网站身份与隐私在关于页面。
+
+## 小程序与后台
+
+- https://thunderxu7-sketch.github.io/essential-oil/mini/
+- https://thunderxu7-sketch.github.io/essential-oil/admin/
+
+GitHub Pages 上的浏览器交互演示，不执行服务器逻辑或真实支付。演示订单、权益、内容编辑与活动状态存储在当前浏览器；同一浏览器的页面共享演示状态，不跨用户共享。后台无需登录，因为不连接真实业务数据；不得将真实客户、凭据或内部数据填入演示。
+
+`seo/demos/` 为独立体验资源，`scripts/demos.py` 生成两个入口，不发布内部策划或原始演示中的非授权参考图。

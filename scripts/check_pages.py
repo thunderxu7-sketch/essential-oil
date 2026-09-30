@@ -3,6 +3,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlsplit, unquote
 from activities import ACTIVITY_PATHS, ASSETS
+from demos import DEMO_FILES
 import json
 import xml.etree.ElementTree as ET
 
@@ -69,6 +70,17 @@ assert 'noindex' in (PUBLIC/'404.html').read_text()
 assert (PUBLIC/'.nojekyll').exists()
 expected={Path(p.lstrip('/'))/'index.html' for p in PATHS}|{Path(p) for p in ['assets/evening.png','assets/public.css','404.html','robots.txt','sitemap.xml','llms.txt','.nojekyll']}
 expected|={Path('assets')/name for name in ASSETS}
+expected|=DEMO_FILES
+for route in ['mini','admin']:
+    raw=(PUBLIC/route/'index.html').read_text()
+    assert 'noindex, follow' in raw and f'data-route="{route}"' in raw
+    assert f'href="{BASE}/demo-assets/style.css"' in raw
+    assert f'src="{BASE}/demo-assets/app.js"' in raw
+    assert f'data-base="{BASE}"' in raw
+app=(PUBLIC/'demo-assets/app.js').read_text()
+assert not any(t in app for t in ['function plan()', 'function website()', '宣发策划案.md', 'product-reference.jpg'])
+assert 'evening-pages-demo-v1' in app and 'storage' in app
+assert '../assets/evening.png' in (PUBLIC/'demo-assets/style.css').read_text()
 actual={p.relative_to(PUBLIC) for p in PUBLIC.rglob('*') if p.is_file()}
 assert actual==expected,(actual-expected,expected-actual)
-print('PASS: 8 indexable pages with static introductions and optional activity interactions; GitHub Pages subpath links, assets, canonical, JSON-LD, sitemap and public-only artifact.')
+print('PASS: 8 indexable pages with static introductions and optional activity interactions; GitHub Pages subpath links, assets, canonical, JSON-LD, sitemap and isolated static mini/admin demos.')
