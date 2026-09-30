@@ -29,8 +29,8 @@ function showResult(){
  resultDate=date();
  const computed=kind==='elements'?dailyElement(choice,resultDate):scoreQuiz(answers);
  result=(kind==='elements'?elements:profiles)[computed.index];
- const distribution=kind==='elements'?`<div class="score-list" aria-label="五行灵感配色占比">${elements.map((e,i)=>`<div class="score-row" style="--accent:${e.color}"><span>${e.symbol}</span><progress value="${computed.shares[i]}" max="100" aria-label="${e.symbol} ${computed.shares[i]}%"></progress><span>${computed.shares[i]}%</span></div>`).join('')}</div><p class="choice-note">这是创意配色占比，不是身体能量或健康评分。</p>`:`<p class="choice-note">你有 ${computed.scores[computed.index]} / ${questions.length} 个选择指向这一偏好。${computed.tied?'本次出现并列，按最近一道选择了并列类型的答案确定主结果。':'结果只描述这次选择，可以随情境改变。'}</p>`;
- host.innerHTML=`<div class="result-head"><p class="eyebrow">${kind==='elements'?'YOUR DAILY SIGN / '+resultDate:'YOUR EVENING, YOUR WAY'}</p><div class="result-seal" style="color:${result.color}">${result.symbol}</div><h2>${result.name}</h2><p class="result-line">${result.line}</p><p class="result-text">${result.text}</p></div>${distribution}<h3 class="section">今晚，可以从这三件小事开始</h3><ol class="ritual-list">${result.tasks.map(t=>`<li>${t}</li>`).join('')}</ol><div class="result-actions"><button class="btn" id="save-card" type="button">保存结果卡</button><button class="btn secondary" id="copy-share" type="button">复制邀请文案</button><button class="reset-button" id="restart" type="button">${kind==='elements'?'换个意象':'重新测试'}</button></div><p class="feedback" id="feedback" role="status" aria-live="polite"></p><textarea id="share-fallback" class="share-fallback" aria-label="可手动复制的分享文案" readonly hidden></textarea><div class="product-bridge"><p class="eyebrow">CONTINUE YOUR EVENING</p><h3>把灵感，带回生活里。</h3><p>如果你也对薰衣草香气感兴趣，可以先了解阿芙薰衣草精油 10ml。项目参考价 ¥99，非店铺实时售价。测试结果不代表产品适合你，使用前请核对商品标签。</p><a href="${productUrl}">了解这瓶精油 →</a><a href="${guideUrl}">先读选购指南</a></div><p style="margin-top:24px"><a href="${otherUrl}">${kind==='elements'?'再测测你的晚间充电方式':'再领一张五行留白签'} →</a></p>`;
+ const distribution=kind==='elements'?`<div class="score-list" aria-label="五行灵感配色占比">${elements.map((e,i)=>`<div class="score-row" style="--accent:${e.color}"><span>${e.symbol}</span><progress value="${computed.shares[i]}" max="100" aria-label="${e.symbol} ${computed.shares[i]}%"></progress><span>${computed.shares[i]}%</span></div>`).join('')}</div><p class="choice-note">五种意象，组成今天的灵感色谱。</p>`:`<p class="choice-note">你有 ${computed.scores[computed.index]} / ${questions.length} 个选择指向这一偏好。${computed.tied?'你也喜欢不止一种方式，这张卡更贴近你最近的选择。':'跟着今晚的心意就好，明天可以有另一种答案。'}</p>`;
+ host.innerHTML=`<div class="result-head"><p class="eyebrow">${kind==='elements'?'YOUR DAILY SIGN / '+resultDate:'YOUR EVENING, YOUR WAY'}</p><div class="result-seal" style="color:${result.color}">${result.symbol}</div><h2>${result.name}</h2><p class="result-line">${result.line}</p><p class="result-text">${result.text}</p></div>${distribution}<h3 class="section">今晚，可以从这三件小事开始</h3><ol class="ritual-list">${result.tasks.map(t=>`<li>${t}</li>`).join('')}</ol><div class="result-actions"><button class="btn" id="save-card" type="button">保存结果卡</button><button class="btn secondary" id="copy-share" type="button">邀请朋友测测</button><button class="reset-button" id="restart" type="button">${kind==='elements'?'换个意象':'重新测试'}</button></div><p class="feedback" id="feedback" role="status" aria-live="polite"></p><textarea id="share-fallback" class="share-fallback" aria-label="发给朋友的话" readonly hidden></textarea><div class="product-bridge"><p class="eyebrow">CONTINUE YOUR EVENING</p><h3>把灵感，带回生活里。</h3><p>想认识一瓶薰衣草精油？看看阿芙薰衣草精油 10ml，了解它的规格与使用说明。</p><p class="reference">参考价 ¥99 · 实际价格以店铺为准</p><a href="${productUrl}">认识这瓶精油 →</a><a href="${guideUrl}">先读选购指南</a></div><p style="margin-top:24px"><a href="${otherUrl}">${kind==='elements'?'再测测你的晚间充电方式':'再领一张五行留白签'} →</a></p>`;
  document.querySelector('#restart').addEventListener('click',begin);
  document.querySelector('#copy-share').addEventListener('click',copyShare);
  document.querySelector('#save-card').addEventListener('click',saveCard);
@@ -39,7 +39,7 @@ function showResult(){
 function caption(){return `${kind==='elements'?'我的今日五行留白签':'我的晚间充电方式'}：${result.name}\n${result.line}\n${kind==='elements'?'五行文化灵感，仅供娱乐。':'原创趣味偏好测试，非心理诊断。'}\n也来找到你的晚间灵感：${inviteUrl}`;}
 async function copyShare(){
  const text=caption();const feedback=document.querySelector('#feedback');
- try{if(!navigator.clipboard?.writeText)throw new Error();await navigator.clipboard.writeText(text);feedback.textContent='邀请文案已复制，可以发给朋友了。';}
+ try{if(!navigator.clipboard?.writeText)throw new Error();await navigator.clipboard.writeText(text);feedback.textContent='已复制，发给朋友一起测测吧。';}
  catch{const area=document.querySelector('#share-fallback');area.hidden=false;area.value=text;area.focus();area.select();feedback.textContent='请长按或选中文案，手动复制。';}
 }
 async function saveCard(){
@@ -60,7 +60,7 @@ async function saveCard(){
   c.fillText(activityUrl.href,500,1190,860);
   const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));if(!blob)throw new Error();
   const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=`晚间留白-${result.id}-${resultDate}.png`;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
-  document.querySelector('#feedback').textContent='结果卡已生成并发起下载；可同时复制邀请文案与链接。';
- }catch{document.querySelector('#feedback').textContent='当前浏览器无法保存图片，请使用“复制邀请文案”。';}
+  document.querySelector('#feedback').textContent='结果卡已生成并发起下载；可同时邀请朋友测测与链接。';
+ }catch{document.querySelector('#feedback').textContent='当前浏览器无法保存图片，请使用“邀请朋友测测”。';}
  finally{button.disabled=false;}
 }

@@ -42,7 +42,7 @@ for path in PATHS:
     assert p.meta['robots'].startswith('index,')
     assert p.meta['og:url']==p.canonical[0]
     assert 'noindex' not in raw
-    assert len(p.schemas)==1 and '阿芙' in raw
+    assert len(p.schemas)==1 and '晚间留白' in raw
 assert len({p.title for p in pages.values()})==len(PATHS)
 for path,p in pages.items():
     for ref in p.refs:
