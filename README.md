@@ -1,6 +1,6 @@
-# 晚间留白 · 产品资料网站
+# 晚间留白 · 生活灵感与精油选购
 
-阿芙薰衣草精油 10ml 的独立产品资料、选购指南与常见问题。
+面向消费者的晚间生活灵感、趣味活动与阿芙薰衣草精油 10ml 介绍。
 本项目非品牌官方网站或销售店铺，不提供价格、库存、疗效或官方身份承诺。
 
 网站：https://thunderxu7-sketch.github.io/essential-oil/
@@ -47,3 +47,5 @@ GitHub Pages 不执行 _headers / _redirects。页面自带正确的 meta robots
 支持结果卡 PNG 下载、邀请文案复制、重测、产品及另一个活动跳转。无账号、追踪采集或答题上传；UTM 仅标识链接来源，并不代表统计服务已接入。活动说明、玩法规则与结果类型在静态 HTML 内可读取。
 
 活动资源位于 `seo/activities/`，模板为 `scripts/activities.py`；使用 `node scripts/check_activities.mjs` 校验计分与每日分布规则。
+
+公开内容由 `scripts/consumer_pages.py` 生成。首页聚焦生活场景与活动参与，产品页提供规格、参考价及选购入口；资料来源在可展开区，网站身份与隐私在关于页面。
