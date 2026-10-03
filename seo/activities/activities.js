@@ -1,4 +1,4 @@
-import {elements, profiles, questions, scoreQuiz, dailyElement} from './model.mjs';
+import {elements, profiles, questions, scoreQuiz, dailyElement, quizEvidence} from './model.mjs';
 const root=document.querySelector('[data-activity]');
 const host=document.querySelector('#experience');
 const kind=root.dataset.activity;
@@ -10,15 +10,15 @@ const productUrl=new URL('products/afu-lavender-essential-oil-10ml/',base);produ
 const guideUrl=new URL('guides/choosing-lavender-essential-oil/',base);
 const otherUrl=new URL(`activities/${kind==='elements'?'evening-personality':'five-elements'}/`,base);
 const date=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
-let answers=[],step=0,choice=null,result=null,resultDate='';
+let answers=[],step=0,choice=null,result=null,resultDate='',previewUrl='';
 const start=document.querySelector('#start');start.hidden=false;start.addEventListener('click',begin);
 function focusHost(){host.tabIndex=-1;host.focus({preventScroll:true});host.scrollIntoView({behavior:'auto',block:'start'});}
-function begin(){answers=[];step=0;choice=null;result=null;renderQuestion();}
+function begin(){if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl='';}answers=[];step=0;choice=null;result=null;renderQuestion();}
 function renderQuestion(){
  const isElements=kind==='elements';
- const opts=isElements?['木 · 一片正在生长的绿意','火 · 一盏温暖的小灯','土 · 一个熟悉的角落','金 · 一张留白的纸','水 · 一段缓缓流动的音乐']:questions[step].options;
+ const opts=isElements?['木 · 一片绿意','火 · 一盏灯光','土 · 熟悉的角落','金 · 一张白纸','水 · 一段音乐'].map((label,profile)=>({label,profile})):questions[step].options;
  const selected=isElements?choice:answers[step];
- host.innerHTML=`<div class="progress-meta"><span>${isElements?'今日灵感选择':`第 ${step+1} / ${questions.length} 题`}</span><span>${isElements?date():'凭第一直觉选择即可'}</span></div><progress class="quiz-progress" max="${isElements?1:questions.length}" value="${isElements?0:step}" aria-label="已完成题数"></progress><form id="question-form"><fieldset class="options"><legend>${isElements?'此刻，你更向往哪个画面？':questions[step].title}</legend>${opts.map((label,i)=>`<label class="option"><input type="radio" name="answer" value="${i}" ${selected===i?'checked':''} required><span>${label}</span></label>`).join('')}</fieldset><div class="quiz-nav"><button type="button" class="reset-button" id="previous" ${isElements||step===0?'hidden':''}>← 上一题</button><button type="submit" class="btn" id="next" ${selected==null?'disabled':''}>${isElements?'生成今日签':step===questions.length-1?'查看我的结果':'下一题 →'}</button></div></form>`;
+ host.innerHTML=`<div class="progress-meta"><span>${isElements?'选择今日画面':`第 ${step+1} / ${questions.length} 题`}</span><span>${isElements?date():'按今晚的想法选择'}</span></div><progress class="quiz-progress" max="${isElements?1:questions.length}" value="${isElements?0:step}" aria-label="已完成题数"></progress><form id="question-form"><fieldset class="options"><legend>${isElements?'此刻，你更喜欢哪个画面？':questions[step].title}</legend>${opts.map(({label,profile})=>`<label class="option"><input type="radio" name="answer" value="${profile}" ${selected===profile?'checked':''} required><span>${label}</span></label>`).join('')}</fieldset><div class="quiz-nav"><button type="button" class="reset-button" id="previous" ${isElements||step===0?'hidden':''}>← 上一题</button><button type="submit" class="btn" id="next" ${selected==null?'disabled':''}>${isElements?'查看这张签':step===questions.length-1?'查看我的结果':'下一题 →'}</button></div></form>`;
  document.querySelector('#question-form').addEventListener('change',()=>{document.querySelector('#next').disabled=false;});
  document.querySelector('#previous').addEventListener('click',()=>{saveAnswer();step--;renderQuestion();});
  document.querySelector('#question-form').addEventListener('submit',e=>{e.preventDefault();saveAnswer();if(isElements||step===questions.length-1)showResult();else{step++;renderQuestion();}});
@@ -29,17 +29,18 @@ function showResult(){
  resultDate=date();
  const computed=kind==='elements'?dailyElement(choice,resultDate):scoreQuiz(answers);
  result=(kind==='elements'?elements:profiles)[computed.index];
- const distribution=kind==='elements'?`<div class="score-list" aria-label="五行灵感配色占比">${elements.map((e,i)=>`<div class="score-row" style="--accent:${e.color}"><span>${e.symbol}</span><progress value="${computed.shares[i]}" max="100" aria-label="${e.symbol} ${computed.shares[i]}%"></progress><span>${computed.shares[i]}%</span></div>`).join('')}</div><p class="choice-note">五种意象，组成今天的灵感色谱。</p>`:`<p class="choice-note">你有 ${computed.scores[computed.index]} / ${questions.length} 个选择指向这一偏好。${computed.tied?'你也喜欢不止一种方式，这张卡更贴近你最近的选择。':'跟着今晚的心意就好，明天可以有另一种答案。'}</p>`;
- host.innerHTML=`<div class="result-head"><p class="eyebrow">${kind==='elements'?'YOUR DAILY SIGN / '+resultDate:'YOUR EVENING, YOUR WAY'}</p><div class="result-seal" style="color:${result.color}">${result.symbol}</div><h2>${result.name}</h2><p class="result-line">${result.line}</p><p class="result-text">${result.text}</p></div>${distribution}<h3 class="section">今晚，可以从这三件小事开始</h3><ol class="ritual-list">${result.tasks.map(t=>`<li>${t}</li>`).join('')}</ol><div class="result-actions"><button class="btn" id="save-card" type="button">保存结果卡</button><button class="btn secondary" id="copy-share" type="button">邀请朋友测测</button><button class="reset-button" id="restart" type="button">${kind==='elements'?'换个意象':'重新测试'}</button></div><p class="feedback" id="feedback" role="status" aria-live="polite"></p><textarea id="share-fallback" class="share-fallback" aria-label="发给朋友的话" readonly hidden></textarea><div class="product-bridge"><p class="eyebrow">CONTINUE YOUR EVENING</p><h3>把灵感，带回生活里。</h3><p>想认识一瓶薰衣草精油？看看阿芙薰衣草精油 10ml，了解它的规格与使用说明。</p><p class="reference">参考价 ¥99 · 实际价格以店铺为准</p><a href="${productUrl}">认识这瓶精油 →</a><a href="${guideUrl}">先读选购指南</a></div><p style="margin-top:24px"><a href="${otherUrl}">${kind==='elements'?'再测测你的晚间充电方式':'再领一张五行留白签'} →</a></p>`;
+ const evidence=kind==='elements'?`<p class="choice-note">你选的画面：${['一片绿意','一盏灯光','熟悉的角落','一张白纸','一段音乐'][choice]}。日期只记录领取时间。</p>`:`<aside class="answer-evidence"><h3>本次回答依据</h3><p>六题中有 ${computed.scores[computed.index]} 题选择了这一类安排。${computed.tied?'有多种偏好并列；采用了你最近一道选中的并列类型。':'它是本次回答中出现最多的偏好。'}</p><ul>${quizEvidence(answers).slice(0,2).map(e=>`<li>在“${e.context}”时，你选择了“${e.answer}”。</li>`).join('')}</ul><p>这是今晚的选择，换一天回答可能不同。</p></aside>`;
+ host.innerHTML=`<div class="result-head"><p class="eyebrow">${kind==='elements'?'今日主题签 · '+resultDate:'本次晚间偏好'}</p><div class="result-seal" style="color:${result.color}">${result.symbol}</div><h2>${result.name}</h2><p class="result-line">${result.line}</p><p class="result-text">${result.text}</p></div>${evidence}<h3 class="section">可以照这三步做</h3><ol class="ritual-list">${result.tasks.map(t=>`<li>${t}</li>`).join('')}</ol><div class="result-actions"><button class="btn" id="save-card" type="button">保存结果卡</button><button class="btn secondary" id="copy-share" type="button">${kind==='elements'?'邀请朋友领签':'邀请朋友测测'}</button><button class="reset-button" id="restart" type="button">${kind==='elements'?'换个画面':'重新测试'}</button></div><p class="feedback" id="feedback" role="status" aria-live="polite"></p><textarea id="share-fallback" class="share-fallback" aria-label="发给朋友的话" readonly hidden></textarea><div class="card-preview" id="card-preview" hidden><h3>你的结果卡</h3><p>手机上可长按图片保存，或点击下方下载。</p><img id="result-card-image" alt="本次活动结果卡"><div class="result-actions"><a class="btn" id="result-card-download">下载图片</a><button type="button" class="reset-button" id="close-card-preview">收起图片</button></div></div><div class="product-bridge"><h3>精油选购资料</h3><p>如果你正在了解薰衣草精油，可以继续看选购指南和阿芙 10ml 的规格。本次活动结果不用于判断产品是否适合你。</p><p class="reference">阿芙薰衣草精油 10ml · 本站参考价 ¥99</p><a href="${guideUrl}">先看选购指南 →</a><a href="${productUrl}">查看商品规格</a></div><p style="margin-top:24px"><a href="${otherUrl}">${kind==='elements'?'再做六题晚间偏好测试':'再领一张五行主题签'} →</a></p>`;
  document.querySelector('#restart').addEventListener('click',begin);
  document.querySelector('#copy-share').addEventListener('click',copyShare);
  document.querySelector('#save-card').addEventListener('click',saveCard);
+ document.querySelector('#close-card-preview').addEventListener('click',()=>{document.querySelector('#card-preview').hidden=true;document.querySelector('#save-card').focus();});
  focusHost();
 }
-function caption(){return `${kind==='elements'?'我的今日五行留白签':'我的晚间充电方式'}：${result.name}\n${result.line}\n${kind==='elements'?'五行文化灵感，仅供娱乐。':'原创趣味偏好测试，非心理诊断。'}\n也来找到你的晚间灵感：${inviteUrl}`;}
+function caption(){return `${kind==='elements'?'我的今日五行主题签':'我的本次晚间偏好'}：${result.name}\n${result.line}\n${kind==='elements'?'五行文化主题娱乐，不计算五行属性。':'依据本次六题选择，非心理诊断或固定性格分类。'}\n${kind==='elements'?'也来选个画面领签':'也来看看今晚的偏好'}：${inviteUrl}`;}
 async function copyShare(){
  const text=caption();const feedback=document.querySelector('#feedback');
- try{if(!navigator.clipboard?.writeText)throw new Error();await navigator.clipboard.writeText(text);feedback.textContent='已复制，发给朋友一起测测吧。';}
+ try{if(!navigator.clipboard?.writeText)throw new Error();await navigator.clipboard.writeText(text);feedback.textContent='已复制邀请文案和链接。';}
  catch{const area=document.querySelector('#share-fallback');area.hidden=false;area.value=text;area.focus();area.select();feedback.textContent='请长按或选中文案，手动复制。';}
 }
 async function saveCard(){
@@ -49,18 +50,23 @@ async function saveCard(){
   const canvas=document.createElement('canvas');canvas.width=1000;canvas.height=1300;
   const c=canvas.getContext('2d');if(!c)throw new Error();
   c.fillStyle='#f8f4f9';c.fillRect(0,0,1000,1300);c.strokeStyle='#cbbbd3';c.lineWidth=2;c.strokeRect(40,40,920,1220);
-  c.fillStyle='#766181';c.textAlign='center';c.font='20px sans-serif';c.fillText('晚 间 留 白  /  EVENING, YOURS.',500,115);
+  c.fillStyle='#766181';c.textAlign='center';c.font='20px sans-serif';c.fillText('晚 间 留 白',500,115);
   c.strokeStyle=result.color;c.beginPath();c.arc(500,290,105,0,Math.PI*2);c.stroke();c.fillStyle=result.color;c.font='100px serif';c.fillText(result.symbol,500,325);
   c.font='50px serif';c.fillText(result.name,500,480);c.font='29px serif';c.fillText(result.line,500,550);
-  c.font='24px sans-serif';c.fillStyle='#65546f';c.fillText('今晚的小小仪式',500,655);
+  c.font='24px sans-serif';c.fillStyle='#65546f';c.fillText('可以照这三步做',500,655);
   result.tasks.forEach((t,i)=>{c.font='24px sans-serif';c.fillText(`${i+1}. ${t}`,500,725+i*60,850);});
-  c.font='23px sans-serif';c.fillText('把夜晚，还给自己。',500,1010);
-  c.font='18px sans-serif';c.fillText(kind==='elements'?`五行文化灵感 · 仅供娱乐 · ${resultDate}`:'原创趣味偏好测试 · 非心理诊断',500,1080);
-  c.font='16px sans-serif';c.fillText('和朋友一起，发现今晚的自己',500,1140);
+  c.font='23px sans-serif';c.fillText('晚间留白 · 免费小活动',500,1010);
+  c.font='18px sans-serif';c.fillText(kind==='elements'?`五行文化主题娱乐 · 不计算属性 · ${resultDate}`:'本次六题偏好 · 非心理诊断',500,1080);
+  c.font='16px sans-serif';c.fillText('邀请朋友也来选一选',500,1140);
   c.fillText(activityUrl.href,500,1190,860);
   const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));if(!blob)throw new Error();
-  const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=`晚间留白-${result.id}-${resultDate}.png`;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
-  document.querySelector('#feedback').textContent='结果卡已生成并发起下载；可同时邀请朋友测测与链接。';
- }catch{document.querySelector('#feedback').textContent='当前浏览器无法保存图片，请使用“邀请朋友测测”。';}
+  if(previewUrl)URL.revokeObjectURL(previewUrl);
+  previewUrl=URL.createObjectURL(blob);
+  const preview=document.querySelector('#card-preview'),link=document.querySelector('#result-card-download');
+  document.querySelector('#result-card-image').src=previewUrl;
+  link.href=previewUrl;link.download=`晚间留白-${result.id}-${resultDate}.png`;
+  preview.hidden=false;link.click();preview.scrollIntoView({block:'start',behavior:'auto'});
+  document.querySelector('#feedback').textContent='图片已生成并发起下载。若未保存，可长按下方图片或点击下载。';
+ }catch{document.querySelector('#feedback').textContent='当前浏览器无法保存图片，请使用邀请按钮复制链接。';}
  finally{button.disabled=false;}
 }

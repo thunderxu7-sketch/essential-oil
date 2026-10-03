@@ -77,7 +77,7 @@ def build(output, origin='', release=False, base_path=None):
     def with_base(content):
         return re.sub(r'((?:href|src)=")/(?!/)', lambda m:m.group(1)+base_path+'/', content) if base_path else content
     def link(path,label):return f'<a href="{E(path)}">{E(label)}</a>'
-    identity='晚间留白，陪你发现属于自己的生活灵感。'
+    identity='精油选购、香气科普和晚间小活动。'
     nav=[('/', '首页'),(PRODUCT_PATH,'薰衣草精油'),(GUIDE_PATH,'新手指南'),(ACTIVITY_PATHS[0],'晚间活动'),(FAQ_PATH,'常见问题')]
     def page(path,title,desc,body,kind='WebPage',product=False):
         current=absolute(path)
@@ -114,7 +114,7 @@ def build(output, origin='', release=False, base_path=None):
     elif (output/'sitemap.xml').exists():
         (output/'sitemap.xml').unlink()
     (output/'robots.txt').write_text(txt)
-    (output/'llms.txt').write_text('# 晚间留白\n\n> 晚间生活灵感、趣味自我探索与精油选购指南。独立网站，非阿芙官方网站或店铺。\n\n## 产品资料\n'+''.join(f'- [{label}]({absolute(path)})\n' for path,label in [(PRODUCT_PATH,p['name']),(GUIDE_PATH,'薰衣草精油选购指南'),(FAQ_PATH,'产品常见问题'),(ABOUT_PATH,'网站身份与信息来源'),(ACTIVITY_PATHS[0],'晚间灵感活动'),(ACTIVITY_PATHS[1],'今日五行留白签'),(ACTIVITY_PATHS[2],'晚间充电方式趣味测试')])+f'\n## 资料边界\n产品索引标注 10ml；资料核验日期 {date}。本站未核验实时价格、库存、单瓶销量或功效，不提供交易。页面正文与来源是信息依据。\n')
+    (output/'llms.txt').write_text('# 晚间留白\n\n> 精油选购指南、香气科普与晚间小活动。独立网站，非阿芙官方网站或店铺。\n\n## 产品资料\n'+''.join(f'- [{label}]({absolute(path)})\n' for path,label in [(PRODUCT_PATH,p['name']),(GUIDE_PATH,'薰衣草精油选购指南'),(FAQ_PATH,'产品常见问题'),(ABOUT_PATH,'网站身份与信息来源'),(ACTIVITY_PATHS[0],'晚间小活动'),(ACTIVITY_PATHS[1],'今日五行主题签'),(ACTIVITY_PATHS[2],'六题晚间偏好测试')])+f'\n## 资料边界\n产品索引标注 10ml；资料核验日期 {date}。本站未核验实时价格、库存、单瓶销量或功效，不提供交易。页面正文与来源是信息依据。\n')
     (output/'.nojekyll').write_text('')
     return {'output':str(output),'pages':len(pages),'indexable':indexable,'origin':origin or None,'base_path':base_path,'sitemap':indexable}
 

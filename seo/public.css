@@ -27,3 +27,7 @@
  .video-dialog-note a{display:inline;line-height:2}.video-preview-note button{min-height:44px}.facts dd{min-width:0}
 }
 @media(max-width:359px){.hero-content{padding:32px 20px}.consumer-hero h1{font-size:43px}.consumer-hero .headline{font-size:16px}.container{padding-left:20px;padding-right:20px}.hero .caption{left:20px;right:15px;font-size:9px}.actions .btn{width:100%}.consumer-price{font-size:43px}}
+
+/* Practical reading links and questions, without repeating promotional card rows. */
+.home-help{padding-top:32px}.help-links{display:grid;grid-template-columns:1fr 1fr;gap:0 36px;border-top:1px solid var(--line)}.help-links>a{display:block;padding:22px 0;text-decoration:none;border-bottom:1px solid var(--line)}.help-links strong{display:block;font-size:17px;color:var(--ink)}.help-links span{display:block;margin-top:8px;font-size:14px;color:var(--muted)}.buyer-questions{padding-left:24px;max-width:850px}.buyer-questions li{padding:20px 0 20px 10px;border-bottom:1px solid var(--line)}.buyer-questions h3{font-size:18px}.buyer-questions p{color:var(--muted);font-size:15px}.product-summary>p:not(.consumer-price){font-size:14px}.featured-product>div>p:not(.eyebrow){max-width:570px}
+@media(max-width:700px){.help-links{grid-template-columns:1fr}.buyer-questions{padding-left:21px}.buyer-questions li{padding-left:5px}.hero .intro{max-width:315px}.hero .caption{max-width:calc(100% - 40px)}}
