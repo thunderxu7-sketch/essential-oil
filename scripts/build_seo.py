@@ -3,6 +3,7 @@
 from activities import ACTIVITY_PATHS, ASSETS, activity_pages
 from consumer_pages import consumer_pages
 from demos import DEMO_FILES, build_demos
+from videos import VIDEO_ASSETS, build_videos
 import argparse
 import html
 import ipaddress
@@ -57,7 +58,7 @@ def build(output, origin='', release=False, base_path=None):
         raise ValueError('发布目录必须与本地演示 dist 分开，例如 publish。')
     if release and output.exists():
         allowed = {Path(path.strip('/'))/'index.html' for path in PUBLIC_PATHS} | DEMO_FILES
-        allowed |= {Path('assets')/name for name in ASSETS}
+        allowed |= {Path('assets')/name for name in ASSETS + VIDEO_ASSETS}
         allowed |= {Path(path) for path in ['assets/public.css','assets/evening.png','404.html','robots.txt','sitemap.xml','llms.txt','.nojekyll']}
         if any(x.relative_to(output) not in allowed for x in output.rglob('*') if x.is_file()):
             raise ValueError('发布目录含演示或内部文件，请指定干净目录。')
@@ -68,6 +69,7 @@ def build(output, origin='', release=False, base_path=None):
     shutil.copy2(ROOT/'seo/assets/evening.png', output/'assets/evening.png')
     for name in ASSETS:
         shutil.copy2(ROOT/'seo/activities'/name, output/'assets'/name)
+    build_videos(ROOT, output)
     p=config['product']; date=config['reviewed_date']; site=config['name']
     indexable=release and bool(origin)
     robots='index, follow, max-image-preview:large' if indexable else 'noindex, follow'

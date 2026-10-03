@@ -4,6 +4,7 @@ from pathlib import Path
 from urllib.parse import urlsplit, unquote
 from activities import ACTIVITY_PATHS, ASSETS
 from demos import DEMO_FILES
+from videos import VIDEO_ASSETS
 import json
 import xml.etree.ElementTree as ET
 
@@ -25,7 +26,7 @@ class Page(HTMLParser):
             if k in a:self.refs.append(a[k])
         if t=='script':
             if a.get('src'):
-                assert a.get('type')=='module' and a['src']==BASE+'/assets/activities.js'
+                assert a.get('type')=='module' and a['src'] in [BASE+'/assets/activities.js',BASE+'/assets/videos.js']
             else:
                 assert a.get('type')=='application/ld+json','Only structured data may be inline'
                 self.injson=True;self.buffer=''
@@ -44,6 +45,10 @@ for path in PATHS:
     assert p.meta['og:url']==p.canonical[0]
     assert 'noindex' not in raw
     assert len(p.schemas)==1 and '晚间留白' in raw
+home=(PUBLIC/'index.html').read_text()
+assert home.count('class="video-card"')==3 and home.count('data-author-avatar')==3
+assert '<iframe' not in home, 'Player must only load after a user chooses a video'
+assert 'src="'+BASE+'/assets/videos.js"' in home
 assert len({p.title for p in pages.values()})==len(PATHS)
 for path,p in pages.items():
     for ref in p.refs:
@@ -69,7 +74,7 @@ assert 'OAI-SearchBot\nAllow: /' in (PUBLIC/'robots.txt').read_text()
 assert 'noindex' in (PUBLIC/'404.html').read_text()
 assert (PUBLIC/'.nojekyll').exists()
 expected={Path(p.lstrip('/'))/'index.html' for p in PATHS}|{Path(p) for p in ['assets/evening.png','assets/public.css','404.html','robots.txt','sitemap.xml','llms.txt','.nojekyll']}
-expected|={Path('assets')/name for name in ASSETS}
+expected|={Path('assets')/name for name in ASSETS + VIDEO_ASSETS}
 expected|=DEMO_FILES
 for route in ['mini','admin']:
     raw=(PUBLIC/route/'index.html').read_text()

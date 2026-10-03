@@ -5,3 +5,8 @@
 @media print{.shell-header,.plan-nav,.btn,.tabs{display:none!important}.plan-layout{display:block}.page{padding:0}.card,.section{break-inside:avoid}.campaign-hero{print-color-adjust:exact}.section{margin-top:20px}body{background:white}.grid2{display:block}.card{margin-bottom:15px}}
 
 .mini-product img{height:88px;object-fit:cover}.mobile-pad>div>img{height:160px;object-fit:cover;mix-blend-mode:normal!important}.phone-top{font-weight:500}.demo-label{font-size:12px;color:var(--muted)}
+
+/* Video curation and live status preview. */
+.video-admin-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:22px}.video-admin-card{min-width:0;padding:20px}.video-admin-cover{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;margin-bottom:17px;background:#ece5f0}.video-admin-card h3{line-height:1.7}.video-admin-card>p{overflow-wrap:anywhere}.video-admin-author{display:flex;align-items:center;gap:10px;margin:20px 0}.video-admin-author>img{width:42px;height:42px;object-fit:cover;border-radius:50%}.video-admin-author a{font-size:13px}.video-admin-author .small{font-size:11px}.video-admin-card>.row{flex-wrap:wrap;gap:8px}
+@media(max-width:1150px){.video-admin-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:750px){.video-admin-grid{grid-template-columns:1fr}}

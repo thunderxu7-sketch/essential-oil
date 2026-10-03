@@ -27,6 +27,8 @@ jobs:
           node-version: "22"
       - name: Check activity scoring
         run: node scripts/check_activities.mjs
+      - name: Check video attribution and live state
+        run: node scripts/check_videos.mjs
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:

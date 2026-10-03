@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "reviewedDate": "2026-10-03",
+  "videos": [
+    {
+      "id": "lavender-extraction",
+      "title": "薰衣草精油，怎样从植物中萃取？",
+      "originalTitle": "家庭DIY秘籍！新疆真实薰衣草精油简易萃取和分析教程",
+      "topic": "植物与萃取",
+      "description": "从一段萃取实验，认识植物与精油之间的联系。",
+      "bvid": "BV1d9w3epEt5",
+      "url": "https://www.bilibili.com/video/BV1d9w3epEt5/",
+      "cover": "https://i0.hdslb.com/bfs/archive/824b6e5eb3021e1d898d2ab1dc7ae6d75a77d259.jpg@1200w_630h",
+      "author": {"id": "3546385332832967", "name": "精油科学实验室", "url": "https://space.bilibili.com/3546385332832967/", "avatar": "https://i2.hdslb.com/bfs/face/cbc42e866ba8fc16f021a654d300b4b8451f5c87.jpg@96w_96h_1c_1s_!web-avatar.webp", "live": {"enabled": false, "url": "", "expiresAt": ""}}
+    },
+    {
+      "id": "scent-composition",
+      "title": "喜欢的香气，如何搭配得更协调？",
+      "originalTitle": "【趣味实验室-协调香味&创香】为何别人的香水那么自然协调 | 调香师是如何创香的 | 用精油创出香气故事",
+      "topic": "香气与搭配",
+      "description": "走进调香师的趣味实验室，了解香气组合的思路。",
+      "bvid": "BV1hf4y1Q74Z",
+      "url": "https://www.bilibili.com/video/BV1hf4y1Q74Z/",
+      "cover": "https://i1.hdslb.com/bfs/archive/271b6275a189ca8250b17b382202cd2e33108562.jpg@1200w_630h",
+      "author": {"id": "181714461", "name": "媮籽酱讲调香", "url": "https://space.bilibili.com/181714461/", "avatar": "https://i2.hdslb.com/bfs/face/80c58d3a30ad6eeaf6d1d853125c7b2b729129b3.jpg@96w_96h_1c_1s_!web-avatar.webp", "live": {"enabled": false, "url": "", "expiresAt": ""}}
+    },
+    {
+      "id": "fragrance-science",
+      "title": "天然与合成香料，有什么不同？",
+      "originalTitle": "香水的秘密: 天然败给人工的香味之战",
+      "topic": "香料与科学",
+      "description": "换个化学视角，探索日常香水与香料背后的知识。",
+      "bvid": "BV1L3411R7N6",
+      "url": "https://www.bilibili.com/video/BV1L3411R7N6/",
+      "cover": "https://i1.hdslb.com/bfs/archive/bf18e8b63227325aa0e5d71fbbff2166ce038035.jpg@1200w_630h",
+      "author": {"id": "414878461", "name": "H2元素实验室", "url": "https://space.bilibili.com/414878461/", "avatar": "https://i2.hdslb.com/bfs/face/7254fe454a1d6702dc2da28455357236ed3d7f5e.jpg@96w_96h_1c_1s_!web-avatar.webp", "live": {"enabled": false, "url": "", "expiresAt": ""}}
+    }
+  ]
+}
