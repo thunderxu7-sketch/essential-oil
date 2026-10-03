@@ -10,3 +10,36 @@
 .video-admin-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:22px}.video-admin-card{min-width:0;padding:20px}.video-admin-cover{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;margin-bottom:17px;background:#ece5f0}.video-admin-card h3{line-height:1.7}.video-admin-card>p{overflow-wrap:anywhere}.video-admin-author{display:flex;align-items:center;gap:10px;margin:20px 0}.video-admin-author>img{width:42px;height:42px;object-fit:cover;border-radius:50%}.video-admin-author a{font-size:13px}.video-admin-author .small{font-size:11px}.video-admin-card>.row{flex-wrap:wrap;gap:8px}
 @media(max-width:1150px){.video-admin-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:750px){.video-admin-grid{grid-template-columns:1fr}}
+
+/* On phones the H5 experience uses the page itself, without nested phone scrolling. */
+@media(max-width:760px){
+ html{scroll-padding-top:110px}body{overflow-wrap:anywhere}
+ .shell-header{min-height:96px;padding:10px 16px 0;padding-top:max(10px,env(safe-area-inset-top));gap:4px}
+ .shell-header .wordmark{min-height:36px;padding-right:65px}.shell-header .demo-label{position:absolute;right:16px;top:21px;font-size:11px}
+ .shell-header nav{height:auto;min-height:44px;gap:8px}.shell-header nav a{min-height:44px;padding:7px 0}
+ input,select,textarea{font-size:16px;min-height:44px;max-width:100%;min-width:0}
+ button.btn,.switch,.back-btn,.text-link,.reset-button{min-height:44px}.text-link,.back-btn{display:inline-flex;align-items:center}
+ .mini-stage{display:block;padding:0 0 calc(80px + env(safe-area-inset-bottom));min-height:calc(100dvh - 96px);background:#faf8fb}
+ .mini-intro{max-width:none;padding:16px 20px;border-bottom:1px solid var(--line)}.mini-intro .eyebrow{display:none}
+ .mini-intro h1{font-size:21px;line-height:1.4;margin:0 0 5px}.mini-intro h1 br{display:none}.mini-intro>p{font-size:12px;max-width:none}
+ .phone{width:100%;max-width:none;margin:0;border:0;border-radius:0;box-shadow:none;overflow:visible}
+ .phone-status{display:none}.phone-top{padding:12px 20px}.phone-body{height:auto;min-height:calc(100dvh - 300px);overflow:visible}
+ .phone-nav{position:fixed;bottom:0;left:0;right:0;z-index:25;padding:8px 0 calc(8px + env(safe-area-inset-bottom));box-shadow:0 -3px 15px #31223c08}
+ .phone-nav button{min-height:48px}.phone .btn{min-height:46px;font-size:14px}.mobile-pad{padding:20px}
+ .checkdays{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}.checkdays .day{width:100%;min-width:0}
+ .mini-product>div{min-width:0}.mini-product>img{flex-shrink:0}.choice{min-height:66px}.coupon{gap:12px;padding:15px}
+ .admin-sidebar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:10px;overflow:visible}
+ .admin-sidebar button{min-width:0;width:100%;min-height:44px;padding:8px 5px;text-align:center;font-size:13px}
+ .admin-title{flex-direction:column;align-items:flex-start;gap:13px}.admin-title>.row{width:100%;flex-wrap:wrap}
+ .admin-title select{font-size:16px;width:160px}.admin-content{padding:20px 16px 32px}.metric{min-width:0}
+ .campaign-row{grid-template-columns:minmax(0,1fr)}.campaign-row>.row{justify-content:flex-start;gap:10px}
+ .card>.row,.section-head{flex-wrap:wrap}.grid2,.video-admin-grid{min-width:0}.video-admin-card .row{align-items:center}
+ .table-wrap{max-width:100%;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+ .table-wrap:before{content:'左右滑动查看完整表格';display:block;position:sticky;left:0;padding:10px 14px;font-size:12px;color:var(--muted);background:#faf8fc}
+ .form-grid,.form-grid label{min-width:0}dialog{width:calc(100% - 24px);max-height:calc(100dvh - 40px);padding:26px 18px;overflow-y:auto;overscroll-behavior:contain}
+ dialog h2{padding-right:20px;font-size:22px}dialog .close{width:44px;height:44px;top:2px;right:4px}.notice{line-height:1.8}
+ #toast{bottom:calc(22px + env(safe-area-inset-bottom));width:max-content;max-width:calc(100% - 32px);padding:12px 16px}
+ body[data-route=mini] #toast{bottom:calc(85px + env(safe-area-inset-bottom))}
+}
+@media(max-width:359px){.mini-intro h1{font-size:19px}.mobile-pad{padding:16px}.metric{padding:14px}.metric strong{font-size:23px}.mobile-hero h2{font-size:29px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn,#toast{transition:none}}

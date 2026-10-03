@@ -94,7 +94,7 @@ def build(output, origin='', release=False, base_path=None):
         legacy='<script>if(["#plan","#website","#mini","#admin"].includes(location.hash))location.replace("/demo/"+location.hash);</script>' if path=='/' and not release else ''
         header=''.join(f'<a href="{u}"'+(' aria-current="page"' if u==path else '')+f'>{label}</a>' for u,label in nav)
         return f'''<!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>{E(title)}</title><meta name="description" content="{E(desc)}"><meta name="robots" content="{robots}">
 {canon}<meta property="og:type" content="website"><meta property="og:locale" content="zh_CN"><meta property="og:site_name" content="晚间留白"><meta property="og:title" content="{E(title)}"><meta property="og:description" content="{E(desc)}">
 <link rel="stylesheet" href="/assets/public.css"><script type="application/ld+json">{schema}</script>{legacy}</head>
@@ -105,7 +105,7 @@ def build(output, origin='', release=False, base_path=None):
         target=output/path.strip('/')/'index.html' if path!='/' else output/'index.html'
         target.parent.mkdir(parents=True,exist_ok=True);target.write_text(with_base(content))
     build_demos(ROOT, output, base_path)
-    (output/'404.html').write_text(with_base('<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1"><title>页面未找到｜晚间留白</title><link rel="stylesheet" href="/assets/public.css"><main class="container"><h1>页面未找到</h1><p>地址可能已变更，欢迎从产品资料页继续阅读。</p><a href="/">返回首页</a></main></html>'))
+    (output/'404.html').write_text(with_base('<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>页面未找到｜晚间留白</title><link rel="stylesheet" href="/assets/public.css"><main class="container"><h1>页面未找到</h1><p>地址可能已变更，欢迎从产品资料页继续阅读。</p><a href="/">返回首页</a></main></html>'))
     # Do not robots-block demo URLs: noindex must remain readable if someone hosts dist accidentally.
     txt='User-agent: *\nAllow: /\n\nUser-agent: OAI-SearchBot\nAllow: /\n'
     if indexable:
