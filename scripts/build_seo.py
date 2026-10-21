@@ -4,6 +4,7 @@ from activities import ACTIVITY_PATHS, ASSETS, activity_pages
 from consumer_pages import consumer_pages
 from demos import DEMO_FILES, build_demos
 from videos import VIDEO_ASSETS, build_videos
+from navigation import experience_navigation
 import argparse
 import html
 import ipaddress
@@ -78,7 +79,7 @@ def build(output, origin='', release=False, base_path=None):
         return re.sub(r'((?:href|src)=")/(?!/)', lambda m:m.group(1)+base_path+'/', content) if base_path else content
     def link(path,label):return f'<a href="{E(path)}">{E(label)}</a>'
     identity='精油选购、香气科普和晚间小活动。'
-    nav=[('/', '首页'),(PRODUCT_PATH,'薰衣草精油'),(GUIDE_PATH,'新手指南'),(ACTIVITY_PATHS[0],'晚间活动'),(FAQ_PATH,'常见问题')]
+    nav=[('/', '首页'),(PRODUCT_PATH,'薰衣草精油'),(GUIDE_PATH,'新手指南'),(ACTIVITY_PATHS[0],'晚间活动'),('/mini/','小程序体验'),(FAQ_PATH,'常见问题')]
     def page(path,title,desc,body,kind='WebPage',product=False):
         current=absolute(path)
         graph=[{'@type':'WebSite','@id':absolute('/#website'),'name':site,'url':absolute('/'),'inLanguage':'zh-CN','description':identity},
@@ -98,7 +99,7 @@ def build(output, origin='', release=False, base_path=None):
 <title>{E(title)}</title><meta name="description" content="{E(desc)}"><meta name="robots" content="{robots}">
 {canon}<meta property="og:type" content="website"><meta property="og:locale" content="zh_CN"><meta property="og:site_name" content="晚间留白"><meta property="og:title" content="{E(title)}"><meta property="og:description" content="{E(desc)}">
 <link rel="stylesheet" href="/assets/public.css"><script type="application/ld+json">{schema}</script>{legacy}</head>
-<body><a class="skip" href="#main">跳至正文</a><header class="header"><a class="brand" href="/">晚间留白<small>EVENING, YOURS.</small></a><nav aria-label="主导航">{header}</nav></header><main id="main">{body}</main><footer class="footer"><p>{identity}</p><nav aria-label="页脚">{link(ABOUT_PATH,'关于晚间留白')}{link(PRODUCT_PATH,'认识精油')}{link(FAQ_PATH,'选购与使用问答')}</nav><p>产品价格与使用说明以店铺页面和商品标签为准。</p></footer></body></html>'''
+<body><a class="skip" href="#main">跳至正文</a><header class="header"><a class="brand" href="/">晚间留白<small>EVENING, YOURS.</small></a><nav aria-label="主导航">{header}</nav></header><main id="main">{body}</main><footer class="footer"><p>{identity}</p><nav aria-label="页脚">{link(ABOUT_PATH,'关于晚间留白')}{link(PRODUCT_PATH,'认识精油')}{link(FAQ_PATH,'选购与使用问答')}</nav><div class="experience-directory"><p>体验入口</p>{experience_navigation(current=path)}</div><p>产品价格与使用说明以店铺页面和商品标签为准。</p></footer></body></html>'''
     pages=consumer_pages(page,p,date)
     pages.update(activity_pages(page))
     for path,content in pages.items():

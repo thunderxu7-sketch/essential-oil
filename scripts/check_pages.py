@@ -5,6 +5,7 @@ from urllib.parse import urlsplit, unquote
 from activities import ACTIVITY_PATHS, ASSETS
 from demos import DEMO_FILES
 from videos import VIDEO_ASSETS
+from navigation import EXPERIENCES
 import json
 import xml.etree.ElementTree as ET
 
@@ -26,7 +27,10 @@ class Page(HTMLParser):
             if k in a:self.refs.append(a[k])
         if t=='script':
             if a.get('src'):
-                assert a.get('type')=='module' and a['src'] in [BASE+'/assets/activities.js',BASE+'/assets/videos.js']
+                if a['src']==BASE+'/demo-assets/app.js':
+                    assert 'defer' in a
+                else:
+                    assert a.get('type')=='module' and a['src'] in [BASE+'/assets/activities.js',BASE+'/assets/videos.js']
             else:
                 assert a.get('type')=='application/ld+json','Only structured data may be inline'
                 self.injson=True;self.buffer=''
@@ -50,6 +54,13 @@ assert home.count('class="video-card"')==3 and home.count('data-author-avatar')=
 assert '<iframe' not in home, 'Player must only load after a user chooses a video'
 assert 'src="'+BASE+'/assets/videos.js"' in home
 assert len({p.title for p in pages.values()})==len(PATHS)
+for route in ['mini','admin']:
+    path='/'+route+'/'
+    raw=(PUBLIC/route/'index.html').read_text()
+    p=Page(raw);pages[path]=p
+    assert p.meta['robots']=='noindex, follow'
+    assert p.canonical==[] and p.schemas==[]
+    assert f'data-route="{route}"' in raw and f'data-base="{BASE}"' in raw
 for path,p in pages.items():
     for ref in p.refs:
         u=urlsplit(ref)
@@ -63,6 +74,9 @@ for path,p in pages.items():
             assert local in pages,(path,ref)
             if u.fragment:assert unquote(u.fragment) in pages[local].ids,(path,ref)
         else:assert f.is_file(),ref
+for source,_ in EXPERIENCES:
+    targets={urlsplit(ref).path.removeprefix(BASE) for ref in pages[source].refs if not urlsplit(ref).scheme}
+    assert {path for path,_ in EXPERIENCES}-{source} <= targets,(source,'missing experience links')
 for obj in pages[PATHS[1]].schemas[0]['@graph']:
     if obj['@type']=='Product':
         assert obj['size']=='10ml'
@@ -88,4 +102,4 @@ assert 'evening-pages-demo-v1' in app and 'storage' in app
 assert '../assets/evening.png' in (PUBLIC/'demo-assets/style.css').read_text()
 actual={p.relative_to(PUBLIC) for p in PUBLIC.rglob('*') if p.is_file()}
 assert actual==expected,(actual-expected,expected-actual)
-print('PASS: 8 indexable pages with static introductions and optional activity interactions; GitHub Pages subpath links, assets, canonical, JSON-LD, sitemap and isolated static mini/admin demos.')
+print('PASS: links and anchors across all 10 pages; 20 directed links between the five experiences; GitHub Pages subpath, assets, metadata, sitemap and mini/admin noindex.')

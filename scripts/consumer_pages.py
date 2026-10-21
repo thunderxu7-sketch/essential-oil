@@ -18,7 +18,7 @@ def consumer_pages(page, product, date):
       <div class="hero-content"><p class="eyebrow">精油选购 · 晚间活动</p><h1>把夜晚，<br>还给自己。</h1>
         <p class="headline">想试试薰衣草精油？先看清楚再选。</p>
         <p class="intro">这里介绍阿芙薰衣草精油 10ml，整理选购时要问的问题，也准备了两个可以和朋友一起玩的晚间小活动。</p>
-        <div class="actions"><a class="btn" href="{product_path}">查看产品与参考价 →</a><a class="btn hero-secondary" href="/activities/">去玩晚间活动</a></div>
+        <div class="actions"><a class="btn" href="{product_path}">查看产品与参考价 →</a><a class="btn hero-secondary" href="/mini/">打开小程序体验 →</a></div>
       </div><span class="caption">AI 氛围图 · 图中瓶子非阿芙商品包装</span>
     </section>
     <section class="band"><div class="container featured-product">
@@ -26,7 +26,7 @@ def consumer_pages(page, product, date):
         <div class="product-tags"><span>阿芙 AFU</span><span>薰衣草单方精油</span><span>10ml 单瓶</span></div>
       </div><div class="product-summary"><p class="small">本站参考价</p><p class="consumer-price">¥99 <small>/ 10ml</small></p>
         <p class="reference">按参考价折算 ¥9.90 / ml。<br>实际支付金额、优惠与运费请查看店铺结算页。</p>
-        <div class="actions"><a class="btn" href="{product_path}">查看规格 →</a><a class="btn light" href="{guide}">第一次怎么选</a></div>
+        <div class="actions"><a class="btn" href="/mini/">体验领券与下单 →</a><a class="btn light" href="{product_path}">查看商品规格</a></div><p class="reference">浏览器演示：领券与订单仅供体验，不收款、不发货。</p>
       </div>
     </div></section>'''
     home += video_section()
@@ -41,7 +41,7 @@ def consumer_pages(page, product, date):
       <div class="product-intro"><div><p class="eyebrow">产品规格</p><h1>阿芙薰衣草精油</h1><p class="lead">10ml 单瓶。先确认商品规格，再问清楚你打算采用的用法。</p>
         <div class="product-tags"><span>阿芙 AFU</span><span>薰衣草单方精油</span><span>10ml</span></div>
         <div class="actions"><a class="btn" href="#questions">看看该问客服什么 →</a><a class="btn light" href="{faq}#buy">在哪里购买</a></div>
-      </div><aside class="product-summary"><p class="small">本站参考价 · 10ml 单瓶</p><p class="consumer-price">¥99</p><p>折合 ¥9.90 / ml</p><p class="reference">这是参考价格，不代表店铺当前到手价。实际优惠、运费和库存请到店铺确认。</p></aside></div>
+      </div><aside class="product-summary"><p class="small">本站参考价 · 10ml 单瓶</p><p class="consumer-price">¥99</p><p>折合 ¥9.90 / ml</p><p class="reference">这是参考价格，不代表店铺当前到手价。实际优惠、运费和库存请到店铺确认。</p><div class="actions"><a class="btn" href="/mini/">体验领券与下单 →</a></div><p class="reference">浏览器演示，不收款、不发货。</p></aside></div>
       <section class="section content"><h2>商品信息</h2><dl class="facts">
         <div><dt>商品名称</dt><dd>{name}</dd></div><div><dt>品牌</dt><dd>阿芙 AFU</dd></div>
         <div><dt>产品类型</dt><dd>薰衣草单方精油</dd></div><div><dt>规格</dt><dd>10ml / 瓶</dd></div>
