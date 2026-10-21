@@ -5,6 +5,7 @@ from consumer_pages import consumer_pages
 from demos import DEMO_FILES, build_demos
 from videos import VIDEO_ASSETS, build_videos
 from navigation import experience_navigation
+from assets import version_assets
 import argparse
 import html
 import ipaddress
@@ -104,7 +105,7 @@ def build(output, origin='', release=False, base_path=None):
     pages.update(activity_pages(page))
     for path,content in pages.items():
         target=output/path.strip('/')/'index.html' if path!='/' else output/'index.html'
-        target.parent.mkdir(parents=True,exist_ok=True);target.write_text(with_base(content))
+        target.parent.mkdir(parents=True,exist_ok=True);target.write_text(version_assets(with_base(content), output, base_path))
     build_demos(ROOT, output, base_path)
     (output/'404.html').write_text(with_base('<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>页面未找到｜晚间留白</title><link rel="stylesheet" href="/assets/public.css"><main class="container"><h1>页面未找到</h1><p>地址可能已变更，欢迎从产品资料页继续阅读。</p><a href="/">返回首页</a></main></html>'))
     # Do not robots-block demo URLs: noindex must remain readable if someone hosts dist accidentally.

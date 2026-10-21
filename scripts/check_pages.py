@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import urlsplit, unquote
+from urllib.parse import urlsplit, unquote, parse_qs
 from activities import ACTIVITY_PATHS, ASSETS
 from demos import DEMO_FILES
 from videos import VIDEO_ASSETS
 from navigation import EXPERIENCES
 import json
+import hashlib
 import xml.etree.ElementTree as ET
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -27,10 +28,11 @@ class Page(HTMLParser):
             if k in a:self.refs.append(a[k])
         if t=='script':
             if a.get('src'):
-                if a['src']==BASE+'/demo-assets/app.js':
+                source_path=urlsplit(a['src']).path
+                if source_path==BASE+'/demo-assets/app.js':
                     assert 'defer' in a
                 else:
-                    assert a.get('type')=='module' and a['src'] in [BASE+'/assets/activities.js',BASE+'/assets/videos.js']
+                    assert a.get('type')=='module' and source_path in [BASE+'/assets/activities.js',BASE+'/assets/videos.js']
             else:
                 assert a.get('type')=='application/ld+json','Only structured data may be inline'
                 self.injson=True;self.buffer=''
@@ -52,7 +54,7 @@ for path in PATHS:
 home=(PUBLIC/'index.html').read_text()
 assert home.count('class="video-card"')==3 and home.count('data-author-avatar')==3
 assert '<iframe' not in home, 'Player must only load after a user chooses a video'
-assert 'src="'+BASE+'/assets/videos.js"' in home
+assert 'src="'+BASE+'/assets/videos.js?v=' in home
 assert len({p.title for p in pages.values()})==len(PATHS)
 for route in ['mini','admin']:
     path='/'+route+'/'
@@ -73,7 +75,11 @@ for path,p in pages.items():
         if local.endswith('/'):
             assert local in pages,(path,ref)
             if u.fragment:assert unquote(u.fragment) in pages[local].ids,(path,ref)
-        else:assert f.is_file(),ref
+        else:
+            assert f.is_file(),ref
+            if u.path.startswith((BASE+'/assets/',BASE+'/demo-assets/')) and f.suffix in {'.js','.css'}:
+                digest=hashlib.sha256(f.read_bytes()).hexdigest()[:12]
+                assert parse_qs(u.query).get('v')==[digest],(path,ref,'stale script/style version')
 for source,_ in EXPERIENCES:
     targets={urlsplit(ref).path.removeprefix(BASE) for ref in pages[source].refs if not urlsplit(ref).scheme}
     assert {path for path,_ in EXPERIENCES}-{source} <= targets,(source,'missing experience links')
@@ -93,8 +99,8 @@ expected|=DEMO_FILES
 for route in ['mini','admin']:
     raw=(PUBLIC/route/'index.html').read_text()
     assert 'noindex, follow' in raw and f'data-route="{route}"' in raw
-    assert f'href="{BASE}/demo-assets/style.css"' in raw
-    assert f'src="{BASE}/demo-assets/app.js"' in raw
+    assert f'href="{BASE}/demo-assets/style.css?v=' in raw
+    assert f'src="{BASE}/demo-assets/app.js?v=' in raw
     assert f'data-base="{BASE}"' in raw
 app=(PUBLIC/'demo-assets/app.js').read_text()
 assert not any(t in app for t in ['function plan()', 'function website()', '宣发策划案.md', 'product-reference.jpg'])
