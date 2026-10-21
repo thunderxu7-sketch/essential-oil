@@ -12,6 +12,7 @@
 ```sh
 python3 scripts/build_seo.py --release --output public
 python3 scripts/check_pages.py
+python3 scripts/check_purchase.py
 ```
 
 向 main 分支推送后，GitHub Actions 自动构建、校验并部署 public 目录。
@@ -91,3 +92,27 @@ GitHub Pages 上的浏览器交互演示，不执行服务器逻辑或真实支�
 导航模板位于 scripts/navigation.py，预览和 Pages 构建共用。运行 scripts/check_pages.py 会检查全部 10 个页面的链接与锚点，并检查五个入口之间的 20 条有向链接；mini/admin 保持 noindex，模拟交易范围不变。
 
 静态构建为脚本和样式链接附加内容摘要版本号，内容变化时使用新的资源 URL，避免新页面继续使用旧脚本；链接校验同时核对资源版本与实际文件内容。
+
+## 商品购买入口（2026-10-21）
+
+当前状态：**店铺首页占位，尚未配置本产品的正式商品直达链接**。经用户明确授权，先部署占位入口，后续由用户提供正式商品链接替换。
+
+配置集中在 `seo/site.json` 的 `product` 内：
+
+```json
+"purchase_url": "https://afusjt.tmall.com/shop/view_shop.htm",
+"purchase_mode": "placeholder"
+```
+
+该链接打开阿芙天猫店铺首页，可能跳转国际版或要求登录；未核实具体商品、10ml 单瓶是否在售、当前售价、库存或优惠，不表示品牌合作。小程序首页和商品页都标注“店铺首页占位 · 非本商品直达”，按钮、复制链接及复制失败时的手动复制弹窗均说明占位性质。
+
+正式替换步骤：
+
+1. 将 `purchase_url` 改为核准的 HTTPS 淘宝／天猫具体商品链接（含商品 `id`），同时将 `purchase_mode` 改为 `product`。不要用搜索页或领券中转页代替。
+2. 同步本地交付目录 `campaign/seo/site.json` 中这两个字段，保留其预览域名配置。
+3. 构建并执行 `scripts/check_purchase.py`、`scripts/check_pages.py`；手机预览中检查店铺、商品、10ml 规格和真实链接。
+4. 推送 main 部署后，再从线上小程序实际点击验证。**仅修改本地 JSON 不会更新线上页面。**
+
+构建时校验模式和网址并移除商品链接推广参数；占位模式仅允许上面记录的店铺首页。正式模式不接受店铺首页，防止忘记更换链接却误显示“购买”。
+
+真实购买在淘宝／天猫处理；本站 ¥99 为参考价，模拟券不能用于店铺购买。外链点击和复制链接不创建本站订单、不核销模拟券，也不计作真实支付。现有模拟下单、订单和活动记录继续保存在当前浏览器。活动暂停或模拟券过期不影响外链入口。手机 App 是否唤起由淘宝及浏览器决定。

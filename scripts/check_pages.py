@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 from html.parser import HTMLParser
+from html import escape
+from purchase import purchase_url
 from pathlib import Path
 from urllib.parse import urlsplit, unquote, parse_qs
 from activities import ACTIVITY_PATHS, ASSETS
@@ -63,6 +65,8 @@ for route in ['mini','admin']:
     assert p.meta['robots']=='noindex, follow'
     assert p.canonical==[] and p.schemas==[]
     assert f'data-route="{route}"' in raw and f'data-base="{BASE}"' in raw
+    assert f'data-purchase-url="{escape(purchase_url(CONFIG), quote=True)}"' in raw
+    assert f'data-purchase-mode="{CONFIG["product"].get("purchase_mode", "product")}"' in raw
 for path,p in pages.items():
     for ref in p.refs:
         u=urlsplit(ref)

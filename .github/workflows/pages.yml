@@ -20,6 +20,8 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Build static website
         run: python3 scripts/build_seo.py --release --output public
+      - name: Check purchase destination validation
+        run: python3 scripts/check_purchase.py
       - name: Check links, metadata and public files
         run: python3 scripts/check_pages.py
       - uses: actions/setup-node@v6
